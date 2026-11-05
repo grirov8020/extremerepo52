@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strix AI Pentest - Claude Sonnet 4-6</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #fff;
+        }
+        
+        .header {
+            padding: 2rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            width: 100%;
+            flex: 1;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            color: #333;
+        }
+        
+        .card h2 {
+            margin-bottom: 1.5rem;
+            color: #667eea;
+            font-size: 1.8rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .status-queued {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .status-running {
+            background: #17a2b8;
+            color: #fff;
+        }
+        
+        .status-completed {
+            background: #28a745;
+            color: #fff;
+        }
+        
+        .status-failed {
+            background: #dc3545;
+            color: #fff;
+        }
+        
+        .scan-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .scan-item-info {
+            flex: 1;
+        }
+        
+        .scan-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            width: auto;
+        }
+        
+        .results-container {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .results-container pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .markdown-content {
+            line-height: 1.6;
+        }
+        
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #667eea;
+        }
+        
+        .markdown-content code {
+            background: #f4f4f4;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .markdown-content pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            margin-top: auto;
+        }
+        
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🦉 Strix AI Pentest</h1>
+        <p>Autonomous AI penetration testing powered by Claude Sonnet 4-6</p>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <h2>🎯 Start New Pentest</h2>
+            <div id="alert-container"></div>
+            
+            <form id="scan-form">
+                <div class="form-group">
+                    <label for="target">Target URL or Path</label>
+                    <input 
+                        type="text" 
+                        id="target" 
+                        name="target" 
+                        placeholder="https://example.com or /path/to/app"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="scan_type">Scan Type</label>
+                    <select id="scan_type" name="scan_type">
+                        <option value="web">Web Application</option>
+                        <option value="api">API Endpoints</option>
+                        <option value="full">Full Pentest (All Skills)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="depth">Scan Depth</label>
+                    <input 
+                        type="number" 
+                        id="depth" 
+                        name="depth" 
+                        min="1" 
+                        max="10" 
+                        value="3"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label>Options</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" id="aggressive" name="aggressive">
+                            Aggressive Mode
+                        </label>
+                        <label>
+                            <input type="checkbox" id="stealth" name="stealth">
+                            Stealth Mode
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn" id="submit-btn">
+                    🚀 Launch Pentest
+                </button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2>📊 Active Scans</h2>
+            <div id="scans-list">
+                <p style="text-align: center; color: #999;">No active scans</p>
+            </div>
+        </div>
+        
+        <div class="card hidden" id="results-card">
+            <h2>🔍 Scan Results</h2>
+            <div id="results-content"></div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Built with <a href="https://github.com/usestrix/strix" target="_blank">Strix</a> × Claude Sonnet 4-6</p>
+    </div>
+    
+    <script>
+        let currentScanId = null;
+        let pollInterval = null;
+        
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+        
+        async function submitScan(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Starting scan...';
+            
+            const formData = {
+                target: document.getElementById('target').value,
+                scan_type: document.getElementById('scan_type').value,
+                depth: parseInt(document.getElementById('depth').value),
+                aggressive: document.getElementById('aggressive').checked,
+                stealth: document.getElementById('stealth').checked
+            };
+            
+            try {
+                const response = await fetch('/api/scan/start', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentScanId = data.scan_id;
+                    showAlert(`Scan started! ID: ${data.scan_id}`, 'success');
+                    startPolling(data.scan_id);
+                    loadScans();
+                } else {
+                    showAlert(`Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert(`Request failed: ${error.message}`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Launch Pentest';
+            }
+        }
+        
+        async function loadScans() {
+            try {
+                const response = await fetch('/api/scans');
+                const data = await response.json();
+                
+                const listEl = document.getElementById('scans-list');
+                
+                if (data.scans.length === 0) {
+                    listEl.innerHTML = '<p style="text-align: center; color: #999;">No active scans</p>';
+                    return;
+                }
+                
+                listEl.innerHTML = data.scans.map(scan => `
+                    <div class="scan-item">
+                        <div class="scan-item-info">
+                            <strong>${scan.target}</strong>
+                            <br>
+                            <small>${scan.scan_type} • ${scan.created_at || 'N/A'}</small>
+                        </div>
+                        <div class="scan-item-actions">
+                            <span class="status-badge status-${scan.status}">${scan.status.toUpperCase()}</span>
+                            ${scan.status === 'completed' ? `
+                                <button class="btn btn-small" onclick="viewResults('${scan.id}')">
+                                    View Results
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load scans:', error);
+            }
+        }
+        
+        async function viewResults(scanId) {
+            try {
+                const response = await fetch(`/api/scan/${scanId}/results`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const card = document.getElementById('results-card');
+                    const content = document.getElementById('results-content');
+                    
+                    content.innerHTML = `
+                        <div style="margin-bottom: 1rem;">
+                            <button class="btn btn-small" onclick="downloadResults('${scanId}')">
+                                💾 Download Report
+                            </button>
+                        </div>
+                        <div class="markdown-content">
+                            ${marked.parse(data.analysis)}
+                        </div>
+                        <hr style="margin: 2rem 0;">
+                        <h3>Raw Output</h3>
+                        <div class="results-container">
+                            <pre>${data.output}</pre>
+                        </div>
+                    `;
+                    
+                    card.classList.remove('hidden');
+                    card.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showAlert(`Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert(`Failed to load results: ${error.message}`, 'error');
+            }
+        }
+        
+        function downloadResults(scanId) {
+            window.location.href = `/api/scan/${scanId}/download`;
+        }
+        
+        async function pollScanStatus(scanId) {
+            try {
+                const response = await fetch(`/api/scan/${scanId}/status`);
+                const data = await response.json();
+                
+                if (data.status === 'completed' || data.status === 'failed') {
+                    stopPolling();
+                    loadScans();
+                    
+                    if (data.status === 'completed') {
+                        showAlert('Scan completed! View results below.', 'success');
+                        viewResults(scanId);
+                    } else {
+                        showAlert(`Scan failed: ${data.error || 'Unknown error'}`, 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Poll error:', error);
+            }
+        }
+        
+        function startPolling(scanId) {
+            stopPolling();
+            pollInterval = setInterval(() => {
+                pollScanStatus(scanId);
+            }, 3000);
+        }
+        
+        function stopPolling() {
+            if (pollInterval) {
+                clearInterval(pollInterval);
+                pollInterval = null;
+            }
+        }
+        
+        // Initialize
+        document.getElementById('scan-form').addEventListener('submit', submitScan);
+        loadScans();
+        setInterval(loadScans, 10000);
+    </script>
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</body>
+</html>
