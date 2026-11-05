@@ -3,254 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strix AI Pentest - Claude Sonnet 4-6</title>
+    <title>Strix AI Pentest - Claude Sonnet 4.6</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            color: #fff;
+            padding: 20px;
         }
-        
-        .header {
-            padding: 2rem;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.2);
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-        
         .container {
             max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-            width: 100%;
-            flex: 1;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
-        
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .content {
+            padding: 30px;
+        }
+        .section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            color: #2a5298;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
             color: #333;
         }
-        
-        .card h2 {
-            margin-bottom: 1.5rem;
-            color: #667eea;
-            font-size: 1.8rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #555;
-        }
-        
-        .form-group input,
-        .form-group select {
+        input[type="text"], input[type="url"], select, textarea {
             width: 100%;
-            padding: 0.75rem;
+            padding: 12px;
             border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 1em;
             transition: border-color 0.3s;
         }
-        
-        .form-group input:focus,
-        .form-group select:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #667eea;
         }
-        
-        .checkbox-group {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1rem;
-        }
-        
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-        }
-        
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            cursor: pointer;
-        }
-        
         .btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
+            padding: 15px 30px;
+            font-size: 1.1em;
             font-weight: 600;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             width: 100%;
         }
-        
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
         }
-        
         .btn:active {
             transform: translateY(0);
         }
-        
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
-        
         .alert {
-            padding: 1rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
         }
-        
         .alert-success {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-        
         .alert-error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        
         .alert-info {
             background: #d1ecf1;
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
-        
         .status-badge {
             display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
             font-weight: 600;
         }
-        
-        .status-queued {
-            background: #ffc107;
-            color: #000;
-        }
-        
-        .status-running {
-            background: #17a2b8;
-            color: #fff;
-        }
-        
-        .status-completed {
-            background: #28a745;
-            color: #fff;
-        }
-        
-        .status-failed {
-            background: #dc3545;
-            color: #fff;
-        }
-        
+        .status-running { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d4edda; color: #155724; }
+        .status-failed { background: #f8d7da; color: #721c24; }
         .scan-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .scan-item h3 {
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+        .scan-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .detail-item {
+            padding: 10px;
             background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-radius: 5px;
         }
-        
-        .scan-item-info {
-            flex: 1;
+        .detail-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
         }
-        
-        .scan-item-actions {
-            display: flex;
-            gap: 0.5rem;
+        .detail-value {
+            font-weight: 600;
+            color: #333;
         }
-        
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            width: auto;
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
         }
-        
-        .results-container {
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 1.5rem;
-            border-radius: 6px;
-            overflow-x: auto;
-            max-height: 600px;
-            overflow-y: auto;
-        }
-        
-        .results-container pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        
-        .markdown-content {
-            line-height: 1.6;
-        }
-        
-        .markdown-content h1,
-        .markdown-content h2,
-        .markdown-content h3 {
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            color: #667eea;
-        }
-        
-        .markdown-content code {
-            background: #f4f4f4;
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .markdown-content pre {
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 1rem;
-            border-radius: 6px;
-            overflow-x: auto;
-        }
-        
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #667eea;
@@ -258,284 +165,254 @@
             width: 40px;
             height: 40px;
             animation: spin 1s linear infinite;
-            margin: 2rem auto;
+            margin: 0 auto;
         }
-        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
-        .hidden {
-            display: none;
+        .results-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            max-height: 500px;
+            overflow-y: auto;
         }
-        
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            background: rgba(0, 0, 0, 0.2);
-            margin-top: auto;
+        .vulnerability {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+            border-radius: 5px;
         }
-        
-        .footer a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
+        .vuln-critical { border-color: #dc3545; background: #f8d7da; }
+        .vuln-high { border-color: #fd7e14; background: #fff3cd; }
+        .vuln-medium { border-color: #ffc107; background: #fff9e6; }
+        .vuln-low { border-color: #28a745; background: #d4edda; }
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🦉 Strix AI Pentest</h1>
-        <p>Autonomous AI penetration testing powered by Claude Sonnet 4-6</p>
-    </div>
-    
     <div class="container">
-        <div class="card">
-            <h2>🎯 Start New Pentest</h2>
-            <div id="alert-container"></div>
-            
-            <form id="scan-form">
+        <div class="header">
+            <h1>🔒 Strix AI Pentest</h1>
+            <p>Powered by Claude Sonnet 4.6 | Advanced Security Testing</p>
+        </div>
+
+        <div class="content">
+            <!-- API Configuration -->
+            <div class="section">
+                <h2>⚙️ API Configuration</h2>
+                <div id="configAlert" class="alert"></div>
+                
                 <div class="form-group">
-                    <label for="target">Target URL or Path</label>
-                    <input 
-                        type="text" 
-                        id="target" 
-                        name="target" 
-                        placeholder="https://example.com or /path/to/app"
-                        required
-                    >
+                    <label for="apiBase">API Base URL</label>
+                    <input type="url" id="apiBase" placeholder="https://pickusss.github.io/" value="https://pickusss.github.io/">
                 </div>
                 
                 <div class="form-group">
-                    <label for="scan_type">Scan Type</label>
-                    <select id="scan_type" name="scan_type">
+                    <label for="apiKey">API Key</label>
+                    <input type="text" id="apiKey" placeholder="Your Claude API key">
+                </div>
+                
+                <button class="btn btn-secondary" onclick="testAPI()">🧪 Test API Connection</button>
+            </div>
+
+            <!-- Scan Configuration -->
+            <div class="section">
+                <h2>🎯 Start New Scan</h2>
+                <div id="scanAlert" class="alert"></div>
+                
+                <div class="form-group">
+                    <label for="target">Target URL/Repository</label>
+                    <input type="text" id="target" placeholder="https://example.com or https://github.com/user/repo">
+                </div>
+                
+                <div class="form-group">
+                    <label for="scanType">Scan Type</label>
+                    <select id="scanType">
                         <option value="web">Web Application</option>
-                        <option value="api">API Endpoints</option>
-                        <option value="full">Full Pentest (All Skills)</option>
+                        <option value="api">API Testing</option>
+                        <option value="repo">Code Repository</option>
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="depth">Scan Depth</label>
-                    <input 
-                        type="number" 
-                        id="depth" 
-                        name="depth" 
-                        min="1" 
-                        max="10" 
-                        value="3"
-                    >
-                </div>
+                <button class="btn" onclick="startScan()">🚀 Launch Pentest</button>
                 
-                <div class="form-group">
-                    <label>Options</label>
-                    <div class="checkbox-group">
-                        <label>
-                            <input type="checkbox" id="aggressive" name="aggressive">
-                            Aggressive Mode
-                        </label>
-                        <label>
-                            <input type="checkbox" id="stealth" name="stealth">
-                            Stealth Mode
-                        </label>
-                    </div>
+                <div class="loading" id="scanLoading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 15px;">Initializing scan...</p>
                 </div>
-                
-                <button type="submit" class="btn" id="submit-btn">
-                    🚀 Launch Pentest
-                </button>
-            </form>
-        </div>
-        
-        <div class="card">
-            <h2>📊 Active Scans</h2>
-            <div id="scans-list">
-                <p style="text-align: center; color: #999;">No active scans</p>
+            </div>
+
+            <!-- Active Scans -->
+            <div class="section">
+                <h2>📊 Active Scans</h2>
+                <div id="scansList">
+                    <p style="color: #666;">No active scans. Start a new scan above.</p>
+                </div>
             </div>
         </div>
-        
-        <div class="card hidden" id="results-card">
-            <h2>🔍 Scan Results</h2>
-            <div id="results-content"></div>
-        </div>
     </div>
-    
-    <div class="footer">
-        <p>Built with <a href="https://github.com/usestrix/strix" target="_blank">Strix</a> × Claude Sonnet 4-6</p>
-    </div>
-    
+
     <script>
-        let currentScanId = null;
-        let pollInterval = null;
-        
-        function showAlert(message, type = 'info') {
-            const container = document.getElementById('alert-container');
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.textContent = message;
-            container.appendChild(alert);
+        const API_BASE = window.location.origin;
+
+        // Test API connection
+        async function testAPI() {
+            const apiBase = document.getElementById('apiBase').value;
+            const apiKey = document.getElementById('apiKey').value;
             
-            setTimeout(() => {
-                alert.remove();
-            }, 5000);
-        }
-        
-        async function submitScan(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = '⏳ Starting scan...';
-            
-            const formData = {
-                target: document.getElementById('target').value,
-                scan_type: document.getElementById('scan_type').value,
-                depth: parseInt(document.getElementById('depth').value),
-                aggressive: document.getElementById('aggressive').checked,
-                stealth: document.getElementById('stealth').checked
-            };
-            
+            if (!apiBase || !apiKey) {
+                showAlert('configAlert', 'Please enter both API Base URL and API Key', 'error');
+                return;
+            }
+
             try {
-                const response = await fetch('/api/scan/start', {
+                const response = await fetch(`${API_BASE}/api/test`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(formData)
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ api_base: apiBase, api_key: apiKey })
                 });
-                
+
                 const data = await response.json();
                 
-                if (response.ok) {
-                    currentScanId = data.scan_id;
-                    showAlert(`Scan started! ID: ${data.scan_id}`, 'success');
-                    startPolling(data.scan_id);
-                    loadScans();
+                if (data.success) {
+                    showAlert('configAlert', '✅ API connection successful! Model response: ' + data.response, 'success');
                 } else {
-                    showAlert(`Error: ${data.error}`, 'error');
+                    showAlert('configAlert', '❌ API test failed: ' + data.error, 'error');
                 }
             } catch (error) {
-                showAlert(`Request failed: ${error.message}`, 'error');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = '🚀 Launch Pentest';
+                showAlert('configAlert', '❌ Connection error: ' + error.message, 'error');
             }
         }
-        
+
+        // Start new scan
+        async function startScan() {
+            const target = document.getElementById('target').value;
+            const scanType = document.getElementById('scanType').value;
+            const apiBase = document.getElementById('apiBase').value;
+            const apiKey = document.getElementById('apiKey').value;
+
+            if (!target) {
+                showAlert('scanAlert', 'Please enter a target URL or repository', 'error');
+                return;
+            }
+
+            // Configure API first
+            if (apiBase && apiKey) {
+                await fetch(`${API_BASE}/api/config`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ api_base: apiBase, api_key: apiKey })
+                });
+            }
+
+            document.getElementById('scanLoading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/scan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ target, scan_type: scanType })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('scanAlert', '✅ Scan started! ID: ' + data.scan_id, 'success');
+                    setTimeout(() => loadScans(), 2000);
+                } else {
+                    showAlert('scanAlert', '❌ Failed to start scan: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('scanAlert', '❌ Error: ' + error.message, 'error');
+            } finally {
+                document.getElementById('scanLoading').style.display = 'none';
+            }
+        }
+
+        // Load active scans
         async function loadScans() {
             try {
-                const response = await fetch('/api/scans');
+                const response = await fetch(`${API_BASE}/api/scans`);
                 const data = await response.json();
+
+                const scansList = document.getElementById('scansList');
                 
-                const listEl = document.getElementById('scans-list');
-                
-                if (data.scans.length === 0) {
-                    listEl.innerHTML = '<p style="text-align: center; color: #999;">No active scans</p>';
+                if (!data.scans || data.scans.length === 0) {
+                    scansList.innerHTML = '<p style="color: #666;">No active scans.</p>';
                     return;
                 }
-                
-                listEl.innerHTML = data.scans.map(scan => `
+
+                scansList.innerHTML = data.scans.map(scan => `
                     <div class="scan-item">
-                        <div class="scan-item-info">
-                            <strong>${scan.target}</strong>
-                            <br>
-                            <small>${scan.scan_type} • ${scan.created_at || 'N/A'}</small>
-                        </div>
-                        <div class="scan-item-actions">
-                            <span class="status-badge status-${scan.status}">${scan.status.toUpperCase()}</span>
-                            ${scan.status === 'completed' ? `
-                                <button class="btn btn-small" onclick="viewResults('${scan.id}')">
-                                    View Results
-                                </button>
+                        <h3>🎯 ${scan.target}</h3>
+                        <span class="status-badge status-${scan.status}">${scan.status.toUpperCase()}</span>
+                        <div class="scan-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Scan ID</div>
+                                <div class="detail-value">${scan.scan_id}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Started</div>
+                                <div class="detail-value">${new Date(scan.started_at).toLocaleString()}</div>
+                            </div>
+                            ${scan.completed_at ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Completed</div>
+                                <div class="detail-value">${new Date(scan.completed_at).toLocaleString()}</div>
+                            </div>
                             ` : ''}
                         </div>
+                        <button class="btn" style="margin-top: 15px;" onclick="viewScanDetails('${scan.scan_id}')">
+                            📋 View Details
+                        </button>
                     </div>
                 `).join('');
             } catch (error) {
-                console.error('Failed to load scans:', error);
+                console.error('Error loading scans:', error);
             }
         }
-        
-        async function viewResults(scanId) {
+
+        // View scan details
+        async function viewScanDetails(scanId) {
             try {
-                const response = await fetch(`/api/scan/${scanId}/results`);
+                const response = await fetch(`${API_BASE}/api/scan/${scanId}`);
                 const data = await response.json();
-                
-                if (response.ok) {
-                    const card = document.getElementById('results-card');
-                    const content = document.getElementById('results-content');
-                    
-                    content.innerHTML = `
-                        <div style="margin-bottom: 1rem;">
-                            <button class="btn btn-small" onclick="downloadResults('${scanId}')">
-                                💾 Download Report
-                            </button>
-                        </div>
-                        <div class="markdown-content">
-                            ${marked.parse(data.analysis)}
-                        </div>
-                        <hr style="margin: 2rem 0;">
-                        <h3>Raw Output</h3>
-                        <div class="results-container">
-                            <pre>${data.output}</pre>
-                        </div>
-                    `;
-                    
-                    card.classList.remove('hidden');
-                    card.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    showAlert(`Error: ${data.error}`, 'error');
-                }
+
+                alert('Scan Details:\n\n' + JSON.stringify(data, null, 2));
             } catch (error) {
-                showAlert(`Failed to load results: ${error.message}`, 'error');
+                alert('Error loading scan details: ' + error.message);
             }
         }
-        
-        function downloadResults(scanId) {
-            window.location.href = `/api/scan/${scanId}/download`;
+
+        // Show alert message
+        function showAlert(elementId, message, type) {
+            const alert = document.getElementById(elementId);
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
         }
-        
-        async function pollScanStatus(scanId) {
-            try {
-                const response = await fetch(`/api/scan/${scanId}/status`);
-                const data = await response.json();
-                
-                if (data.status === 'completed' || data.status === 'failed') {
-                    stopPolling();
-                    loadScans();
-                    
-                    if (data.status === 'completed') {
-                        showAlert('Scan completed! View results below.', 'success');
-                        viewResults(scanId);
-                    } else {
-                        showAlert(`Scan failed: ${data.error || 'Unknown error'}`, 'error');
-                    }
-                }
-            } catch (error) {
-                console.error('Poll error:', error);
-            }
-        }
-        
-        function startPolling(scanId) {
-            stopPolling();
-            pollInterval = setInterval(() => {
-                pollScanStatus(scanId);
-            }, 3000);
-        }
-        
-        function stopPolling() {
-            if (pollInterval) {
-                clearInterval(pollInterval);
-                pollInterval = null;
-            }
-        }
-        
-        // Initialize
-        document.getElementById('scan-form').addEventListener('submit', submitScan);
-        loadScans();
+
+        // Auto-refresh scans every 10 seconds
         setInterval(loadScans, 10000);
+        
+        // Load scans on page load
+        window.onload = loadScans;
     </script>
-    
-    <!-- Marked.js for markdown rendering -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html>
