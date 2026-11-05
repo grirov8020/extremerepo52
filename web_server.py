@@ -9,10 +9,7 @@ from datetime import datetime
 from typing import Any, Dict
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
-from fastapi import FastAPI, Request, UploadFile, File, Form
-from fastapi.responses import HTMLResponse, StreamingResponse, FileResponse, JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-import anthropic, subprocess, os, json, traceback, sys, time, re, sqlite3
+import subprocess, traceback, sys, time, re, sqlite3
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -35,12 +32,8 @@ active_scans: Dict[str, Any] = {}
 def configure_claude_sonnet(api_base: str = None, api_key: str = None):
     """Настройка Claude Sonnet 4.6 через кастомный API endpoint"""
     
-app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-client     = anthropic.Anthropic(
     final_api_base = api_base or os.getenv('ANTHROPIC_BASE_URL')
     final_api_key = api_key or os.getenv('ANTHROPIC_API_KEY')
-)    
     # Устанавливаем переменные окружения для Strix
     os.environ['STRIX_LLM'] = 'claude-sonnet-4-6'
     os.environ['LLM_API_BASE'] = final_api_base.rstrip('/')
